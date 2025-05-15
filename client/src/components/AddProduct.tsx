@@ -1,9 +1,9 @@
 import Image from 'next/image';
-import React, { FormEvent, useState } from 'react';
+import React, { Dispatch, FormEvent, useState } from 'react';
 
 type Props = {};
 
-export default function AddProduct({}: Props) {
+export default function AddProduct({setData}: {setData: Dispatch<React.SetStateAction<any>>}) {
   const [productName, setProductName] = useState<string>('');
   const [productDetails, setProductDetails] = useState<string>('');
   const [price, setPrice] = useState<number | null>(null);
@@ -42,6 +42,15 @@ export default function AddProduct({}: Props) {
             });
             const data = await res.json();
             console.log(data);
+            alert(data.message);
+            setImage(null);
+            setProductDetails('');
+            setPreviewUrl('');
+            setPrice(null);
+            setProductName('')
+            if(data?.product){
+              setData((prev: any)=>[...prev, data.product])
+            }
         } catch (error) {
             console.log(error)
         }
