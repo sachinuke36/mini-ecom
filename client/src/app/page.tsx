@@ -18,6 +18,9 @@ const HomePage = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedProduct, setSelectedProduct] = useState<string>("");
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [filteredData, setFilteredData] = useState<Product[]>(data);
+  const [loading, setLoading] = useState<boolean>(false);
+
   const router = useRouter();
 
 // const BackendUrl = 'http://localhost:8000'
@@ -29,6 +32,7 @@ const HomePage = () => {
       const response = await fetch(BackendUrl + "/api/products/" + userId);
       const data = await response.json();
       setData(data);
+      setFilteredData(data)
       console.log(data);
     } catch (error) {
       console.log(error);
@@ -61,13 +65,45 @@ const HomePage = () => {
     getData();
   }, [getData, router]);
 
-  const filteredData = data.filter(
+  useEffect(()=>{
+    if(searchTerm !== ''){
+    setFilteredData(data.filter(
     (product: Product) =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ))}else{
+    setFilteredData(data);
+  }
+  },[searchTerm])
 
-  // console.log(selectedProduct);
+
+
+
+  const getSearchedData = async ()=>{
+    setLoading(true)
+    try {
+      const response = await fetch(BackendUrl + "/api/products/smartsearch",{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials:'include',
+        body: JSON.stringify({
+          query: searchTerm,
+        })
+      });
+      const data = await response.json();
+       setFilteredData(data);
+      console.log(data);
+    } catch (error) {
+      console.log(error)
+    }finally{
+      setLoading(false);
+    }
+
+  }
+
+  
 
   return (
     <div className="h-screen bg-gradient-to-br from-purple-600 to-indigo-700 flex items-center justify-center  md:p-4">
@@ -75,7 +111,7 @@ const HomePage = () => {
         {selectedProduct == "" ? (
           <>
             <div className="flex flex-col gap-4 mt-6 md:mt-0 md:flex-row md:justify-evenly items-center  px-5 lg:px-20">
-              <div className="shadow-lg rounded-2xl px-2 bg-white  shadow-purple-500 flex items-center justify-center gap-2">
+              <div className="shadow-lg  rounded-2xl px-2 bg-white  shadow-purple-500 flex items-center justify-center gap-2">
                 <input
                   type="search"
                   placeholder="Search"
@@ -84,11 +120,16 @@ const HomePage = () => {
                   name=""
                   id=""
                 />
-                <FaSearch
-                  size={20}
-                  color="purple"
-                  className="font-extrabold mx-auto"
-                />
+               {loading ? (
+                  <div className="animate-spin h-4 w-4 border-2 border-purple-500 border-b-transparent border-l-transparent rounded-full "></div>
+                ) : (
+                  <FaSearch
+                    size={20}
+                    color="purple"
+                    className="font-extrabold mx-auto cursor-pointer"
+                    onClick={getSearchedData}
+                  />
+                )}
               </div>
               <Navbar active={active} setActive={setActive} />
               <div className="hidden lg:flex shadow-lg p-2 rounded-2xl shadow-purple-500 bg-white">
@@ -98,7 +139,7 @@ const HomePage = () => {
               </div>
             </div>
 
-            <div className="scroll-auto h-full max-h-[60%] overflow-y-scroll">
+            <div className="scroll-auto h-full overflow-y-scroll">
               {active == "add-product" ? (
                 <AddProduct setData={setData} />
               ) : (

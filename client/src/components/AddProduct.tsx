@@ -57,12 +57,12 @@ export default function AddProduct({setData}: {setData: Dispatch<React.SetStateA
   }
 
   return (
-    <div className="bg-white flex w-[90%] h-[90%] mx-auto mt-10 p-5 shadow-2xl">
+    <div className="bg-white flex w-[90%] h-[50%] mx-auto mt-10 p-5 shadow-2xl">
 
       {/* Left box with image preview */}
-      <div className="w-1/2 h-[400px] bg-purple-300 flex items-center justify-center">
+      <div className="w-1/2 h-full bg-purple-300 flex items-center justify-center">
         {previewUrl ? (
-          <img src={previewUrl} alt="Preview" className="w-[400px] h-[400px] object-contain" />
+          <img src={previewUrl} alt="Preview" className=" w-full h-full object-contain" />
         ) : (
           <p className="text-gray-400">Image preview will appear here</p>
         )}
@@ -70,7 +70,7 @@ export default function AddProduct({setData}: {setData: Dispatch<React.SetStateA
 
       {/* Right box with form */}
       <div className=" w-1/2 h-full">
-        <form className="flex flex-col gap-4  px-4" onSubmit={handleSubmit}>
+        <form className="flex flex-col gap-2  px-4 " onSubmit={handleSubmit}>
           <input
             type="text"
             placeholder="Product name"

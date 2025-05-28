@@ -13,7 +13,7 @@ type Props = {
 
 export default function Navbar({active, setActive}: Props) {
     const router = useRouter()
-     // const backendUrl = 'http://localhost:8000'
+    //  const backendUrl = 'http://localhost:8000'
   const backendUrl = 'https://mini-ecom-5r93.onrender.com'
 
   const logout = async () => {

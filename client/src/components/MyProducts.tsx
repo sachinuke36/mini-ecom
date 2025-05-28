@@ -10,7 +10,7 @@ export default function MyProducts({data, setSelectedProduct, setModalOpen}: {da
 }) {
  
   return (
-    <div className='flex w-full mt-12 h-full justify-center items-center flex-wrap gap-5'>
+    <div className='flex w-full py-4 mt-1 overflow-scroll max-h-[400px] h-[650px] justify-center items-center flex-wrap gap-5'>
         {
             data.length > 0 && (
                 data.map((card:Product)=>(

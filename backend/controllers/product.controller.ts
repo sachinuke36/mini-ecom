@@ -3,7 +3,7 @@ import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import multerStorageCloudinary from 'multer-storage-cloudinary';
 import { prisma } from "../db/db.config";
-import {openai} from '../lib/openai'
+import {ai} from '../lib/openai'
 import {cosineSimilarity} from '../lib/cosine'
 
 export async function addProduct(req: Request, res: Response):Promise<any>{
@@ -22,29 +22,33 @@ export async function addProduct(req: Request, res: Response):Promise<any>{
     if (!user) {
       return res.status(400).json({ message: 'User not found. Invalid userId.' });
     }
-        let embedding: number[] | null = null;
-
+            let embedding: number[] | undefined = []
         try {
-            const embeddingResponse = await openai.embeddings.create({
-                model: "text-embedding-3-small",
-                input: description,
+            const embeddingResponse = await ai.models.embedContent({
+                model:'gemini-embedding-exp-03-07',
+                contents: description,
+                config: {
+                    taskType: "RETRIEVAL_QUERY",
+                }
             });
-                embedding = embeddingResponse.data[0].embedding;
+                 embedding = embeddingResponse.embeddings?.[0]?.values;
+                console.log("embeddingResponse: ",embeddingResponse)
+                console.log("embeding: ",embedding)
         } catch (error:any) {
                 console.warn("Embedding generation failed, proceeding without it:", error.message);
         }
+        const product = await prisma.product.create({
+          data: {
+            name,
+            price: parseFloat(price),
+            description,
+            imageUrl, 
+            addedBy: userId,
+            embedding: JSON.stringify(embedding)
+          },
+        });
 
      
-    const product = await prisma.product.create({
-      data: {
-        name,
-        price: parseFloat(price),
-        description,
-        imageUrl, 
-        addedBy: userId,
-        embedding: JSON.stringify(embedding)
-      },
-    });
 
     // Send back the product data, including image URL
     res.status(201).json({
@@ -58,30 +62,48 @@ export async function addProduct(req: Request, res: Response):Promise<any>{
 }
 
 
-export async function smartSearch(req: Request, res: Response) {
+export async function smartSearch(req: Request, res: Response):Promise<any> {
   const { query } = req.body;
 
   try {
-    const embeddingResponse = await openai.embeddings.create({
-      model: "text-embedding-3-small",
-      input: query,
+    const embeddingResponse = await ai.models.embedContent({
+      model: "gemini-embedding-exp-03-07",
+      contents: query,
+        config: {
+            taskType: "RETRIEVAL_QUERY",
+        }
     });
 
-    const queryEmbedding = embeddingResponse.data[0].embedding;
+const queryEmbedding = embeddingResponse.embeddings?.[0]?.values;
 
     const products = await prisma.product.findMany({
       where: { embedding: { not: null } },
     });
 
     const ranked = products
-      .map(product => {
-        const productEmbedding = JSON.parse(product.embedding || "[]");
-        const score = cosineSimilarity(queryEmbedding, productEmbedding);
-        return { ...product, score };
-      })
-      .sort((a, b) => b.score - a.score);
+  .map(product => {
+    let productEmbedding: number[] = [];
 
-    res.json(ranked.slice(0, 10)); 
+    try {
+      const parsed = JSON.parse(product.embedding || "[]");
+      if (Array.isArray(parsed) && typeof parsed[0] === "number") {
+        productEmbedding = parsed;
+      }
+    } catch (e) {
+      console.warn("Failed to parse embedding for product:", product.id);
+    }
+
+    const score =
+      queryEmbedding && productEmbedding.length
+        ? cosineSimilarity(queryEmbedding, productEmbedding)
+        : 0;
+
+    return { ...product, score };
+  })
+  .filter(product => product.score > 0) // Optional: remove completely irrelevant items
+  .sort((a, b) => b.score - a.score);
+
+    return res.json(ranked.slice(0, 10)); 
 
   } catch (error) {
     console.error(error);
