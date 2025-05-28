@@ -55,7 +55,7 @@ const HomePage = () => {
     };
 
     checkAuth();
-  }, [router]);
+  }, []);
 
   useEffect(() => {
     getData();

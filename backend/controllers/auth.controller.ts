@@ -80,5 +80,9 @@ export async function generateSalt(password: string):Promise<string>{
 export async function setCookies(user:any, res: Response){
     const JWT_SECRET = process.env.JWT_SECRET as string;
     const token = await jwt.sign({email: user.email},JWT_SECRET, {expiresIn:'1d'});
-    return res.status(200).cookie('authtoken',token).json({success: true, userId: user.userId})
+    return res.status(200).cookie('authtoken',token,{
+        httpOnly: true,
+        secure: true, // Required in production
+        sameSite: "none", // Required to send across domains
+    }).json({success: true, userId: user.userId})
 }
