@@ -13,9 +13,11 @@ type Props = {
 
 export default function Navbar({active, setActive}: Props) {
     const router = useRouter()
+     // const backendUrl = 'http://localhost:8000'
+  const backendUrl = 'https://mini-ecom-5r93.onrender.com'
 
   const logout = async () => {
-    await fetch('http://localhost:8000/api/auth/logout', {
+    await fetch(`${backendUrl}/api/auth/logout`, {
       credentials: 'include',
     })
     localStorage.removeItem('userId');

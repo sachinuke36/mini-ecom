@@ -9,7 +9,8 @@ export default function AddProduct({setData}: {setData: Dispatch<React.SetStateA
   const [price, setPrice] = useState<number | null>(null);
   const [image, setImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const BackendUrl = 'http://localhost:8000'
+  // const BackendUrl = 'http://localhost:8000'
+  const BackendUrl = 'https://mini-ecom-5r93.onrender.com'
 
   const inputStyle =
     'border-b border-gray-300 focus:outline-none focus:border-purple-500 py-2';

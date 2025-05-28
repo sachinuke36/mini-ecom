@@ -13,7 +13,8 @@ const Auth = ({action}:Props) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword]= useState<string>('');
   const [confirmPass, setConfirmPass]= useState<string>('');
-  const backendUrl = 'http://localhost:8000'
+  // const backendUrl = 'http://localhost:8000'
+  const backendUrl = 'https://mini-ecom-5r93.onrender.com'
   const router = useRouter();
 
 

@@ -8,7 +8,7 @@ type ProductModalProps = {
 };
 
 const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, product }) => {
-    console.log(product)
+    // console.log(product)
   if (!isOpen) return null;
 
   return (
