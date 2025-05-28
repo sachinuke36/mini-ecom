@@ -1,7 +1,9 @@
-
 # 🛒 Mini E-Commerce App
 
 A full-stack **Mini E-Commerce Web Application** built with **Next.js**, **Express**, **PostgreSQL**, **Prisma**, and **Cloudinary** for uploading product images. The app allows users to **add products** and **view/search their products** in a clean, responsive interface powered by **Tailwind CSS**.
+
+👉 **Live Demo:** [Visit Here](https://mini-ecom-git-main-sachinuke36s-projects.vercel.app)
+
 
 ---
 
@@ -26,10 +28,13 @@ A full-stack **Mini E-Commerce Web Application** built with **Next.js**, **Expre
   - Uploaded image
 - Products are fetched from the backend and update instantly on submission.
 
-### 🔍 Optional: Search Feature
+### 🔍 Smart Search Feature
 
 - **Simple Search**: Search products by name or keywords in description.
-- OR **Contextual Search** *(Future Scope)*: Smarter matching based on semantic meaning, not just text match.
+- ✅ **Smart Search (New!)**: Semantic search using Google’s `@google/generative-ai`:
+  - Uses **embeddings** to understand meaning, not just keywords.
+  - Enables **contextual product matching**.
+  - Powered by the **Google Generative AI SDK** (`gemini-embedding-001` model).
 
 ---
 
@@ -47,11 +52,9 @@ A full-stack **Mini E-Commerce Web Application** built with **Next.js**, **Expre
 - **Cloudinary** (Image uploads)
 - **JWT Authentication**
 - **Multer** (Image handling middleware)
-- **OpenAI API** *(optional)*
+- **Google Generative AI SDK** (`@google/generative-ai`)
 
 ---
-
-
 
 ## 🧪 .env Configuration (Server)
 
@@ -59,7 +62,7 @@ A full-stack **Mini E-Commerce Web Application** built with **Next.js**, **Expre
 DATABASE_URL="postgresql://<user>:<password>@<host>/<dbname>?sslmode=require"
 JWT_SECRET=your_jwt_secret
 CLOUDINARY_URL=cloudinary://<api_key>:<api_secret>@<cloud_name>
-OPENAI_API_KEY=your_openai_api_key
+GOOGLE_API_KEY=your_google_genai_api_key
 ```
 
 ---
@@ -84,11 +87,12 @@ npm run dev
 
 ## 🌐 API Endpoints (Backend)
 
-| Method | Route | Description |
-|--------|-------|-------------|
-| POST   | `/api2/products/add` | Add new product |
-| GET    | `/api/products/:userId` | Fetch user’s products |
-| GET    | `/api/auth/me` | Authenticate current user |
+| Method | Route                        | Description                        |
+|--------|-----------------------------|------------------------------------|
+| POST   | `/api2/products/add`        | Add new product                    |
+| GET    | `/api/products/:userId`     | Fetch user’s products              |
+| GET    | `/api/auth/me`              | Authenticate current user          |
+| POST   | `/api/products/smartsearch` | Smart semantic product search      |
 
 ---
 
@@ -98,18 +102,18 @@ npm run dev
 - ☁️ Cloudinary for optimized image hosting
 - 🔄 Live UI updates after submission
 - 📱 Responsive design with Tailwind CSS
-- 💬 Search feature for quick product discovery
+- 💬 Smart search with **semantic embeddings** (Google GenAI)
 
 ---
 
 ## 🧠 Future Improvements
 
-- Add **contextual AI-based search**
-- Edit/delete product functionality
+- Product **edit/delete** functionality
 - Image optimization & compression
+- Enhanced ranking algorithm for smart search
 
 ---
 
 ## 🙌 Author
 
-Developed by **Sachin Krupal uke**
+Developed by **Sachin Krupal Uke**
