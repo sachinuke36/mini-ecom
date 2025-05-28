@@ -65,7 +65,15 @@ dotenv.config()
 const app = express()
 const PORT = process.env.PORT || 8000;
 
-app.use(cors({ origin: 'https://mini-ecom-ldiuqmmbh-sachinuke36s-projects.vercel.app', credentials: true }))
+app.use(
+  cors({
+    origin: [
+      "https://mini-ecom-git-main-sachinuke36s-projects.vercel.app",
+      "http://localhost:3000",
+    ],
+    credentials: true,
+  })
+);
 app.use(cookieParser())
 app.use(urlencoded({ extended: true }))
 
