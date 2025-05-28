@@ -1,8 +1,7 @@
 "use client"
-import React, { Dispatch, useCallback, useEffect, useState } from 'react'
+import React, { Dispatch} from 'react'
 import Card from './Card';
 
-type Props = {}
 
 export default function MyProducts({data, setSelectedProduct, setModalOpen}: {data:any, 
   setSelectedProduct: Dispatch<React.SetStateAction<string>>,

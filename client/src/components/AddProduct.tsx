@@ -1,7 +1,5 @@
-import Image from 'next/image';
 import React, { Dispatch, FormEvent, useState } from 'react';
 
-type Props = {};
 
 export default function AddProduct({setData}: {setData: Dispatch<React.SetStateAction<any>>}) {
   const [productName, setProductName] = useState<string>('');
