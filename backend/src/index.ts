@@ -69,6 +69,7 @@ app.use(
   cors({
     origin: [
       "https://mini-ecom-git-main-sachinuke36s-projects.vercel.app",
+      "https://mini-ecom.vercel.app",
       "http://localhost:3000",
     ],
     credentials: true,
