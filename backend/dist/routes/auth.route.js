@@ -1,12 +1,14 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
 const auth_controller_1 = require("../controllers/auth.controller");
-const router = express_1.default.Router();
-router.post('/auth/register', auth_controller_1.Register);
-router.post('/auth/login', auth_controller_1.Login);
-exports.default = router;
+const isLoggedIn_1 = require("../middleware/isLoggedIn");
+exports.default = (router) => {
+    router.post("/auth/login", auth_controller_1.Login);
+    router.get("/auth/logout", auth_controller_1.Logout);
+    router.post("/auth/register", auth_controller_1.Register);
+    router.get("/user/:userId", auth_controller_1.getUser);
+    router.get("/auth/me", isLoggedIn_1.isLoggedIn, (req, res) => {
+        res.status(200).json({ user: req.user });
+    });
+};
 //# sourceMappingURL=auth.route.js.map

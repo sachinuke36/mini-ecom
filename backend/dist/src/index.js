@@ -1,4 +1,13 @@
 "use strict";
+// import express, { Request, Response, urlencoded } from 'express'
+// import dotenv from 'dotenv'
+// import cors from 'cors'
+// import router from '../routes/router'
+// import router2 from '../routes/router2'
+// import cookieParser from 'cookie-parser';
+// import multer from 'multer';
+// import { v2 as cloudinary } from 'cloudinary';
+// import multerStorageCloudinary from 'multer-storage-cloudinary';
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -36,17 +45,63 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// const app = express();
+// const PORT = 8000;
+// dotenv.config();
+// app.use(cors({origin:'http://localhost:3000', credentials: true}));
+// // app.use(express.json());
+// app.use(cookieParser());
+// app.use(urlencoded({extended: true}));
+// cloudinary.config({ url: process.env.CLOUDINARY_URL});
+// const storage = multerStorageCloudinary({
+//         cloudinary: cloudinary,
+//         params: {
+//             resource_type: 'image',
+//             public_id: 'products',
+//             allowed_formats: ['jpg', 'jpeg', 'png', 'gif'],
+//         } as any,
+//     });
+// export const upload = multer({ storage: storage });
+// app.use('/api2',router2());
+// app.use(express.json({ limit: '10mb' }));
+// app.get('/',(req,res)=>{
+//   res.send('<h1>Hii there!</h1>')
+// })
+// app.use('/api',router());
+// app.listen(PORT,()=>{
+//     console.log(`Server is listening to port:${PORT}`)
+// })
 const express_1 = __importStar(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
-const auth_route_1 = __importDefault(require("../routes/auth.route"));
+const router_1 = __importDefault(require("../routes/router"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const multer_1 = __importDefault(require("multer"));
+const cloudinary_1 = require("cloudinary");
+const multer_storage_cloudinary_1 = __importDefault(require("multer-storage-cloudinary"));
+const product_controller_1 = require("../controllers/product.controller");
+dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = 8000;
-dotenv_1.default.config();
-app.use((0, cors_1.default)({ origin: '*' }));
-app.use(express_1.default.json());
+app.use((0, cors_1.default)({ origin: 'http://localhost:3000', credentials: true }));
+app.use((0, cookie_parser_1.default)());
 app.use((0, express_1.urlencoded)({ extended: true }));
-app.use('/api', auth_route_1.default);
+cloudinary_1.v2.config({ url: process.env.CLOUDINARY_URL });
+const storage = (0, multer_storage_cloudinary_1.default)({
+    cloudinary: cloudinary_1.v2,
+    params: {
+        resource_type: 'image',
+        public_id: (req, file) => `products/${Date.now()}-${file.originalname}`,
+        allowed_formats: ['jpg', 'jpeg', 'png', 'gif'],
+    },
+});
+const upload = (0, multer_1.default)({ storage: storage });
+app.post('/api2/products/add', upload.single('image'), product_controller_1.addProduct);
+app.use(express_1.default.json({ limit: '10mb' }));
+app.use('/api', (0, router_1.default)());
+app.get('/', (req, res) => {
+    res.send('<h1>Hii there!</h1>');
+});
 app.listen(PORT, () => {
     console.log(`Server is listening to port:${PORT}`);
 });
