@@ -9,6 +9,7 @@ export interface CustomRequest extends Request {
 
 export const isLoggedIn = (req: CustomRequest, res: Response, next: NextFunction):void => {
   const token = req.cookies.authtoken;
+  console.log(token);
   if (!token) {res.status(401).json({ message: 'Unauthorized' });
     return;
 }
@@ -16,6 +17,7 @@ export const isLoggedIn = (req: CustomRequest, res: Response, next: NextFunction
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded ;
+    console.log(decoded)
     // const authToken = getCookieValue('authtoken');
     // console.log('Auth Token:', authToken);
     next();
