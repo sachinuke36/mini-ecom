@@ -1,16 +1,17 @@
+import { Product } from '@/types/Products';
 import React, { Dispatch, FormEvent, useState } from 'react';
 
 
-export default function AddProduct({setData}: {setData: Dispatch<React.SetStateAction<any>>}) {
+export default function AddProduct({setData}: {setData: Dispatch<React.SetStateAction<Product[]>>}) {
   const [productName, setProductName] = useState<string>('');
   const [productDetails, setProductDetails] = useState<string>('');
   const [price, setPrice] = useState<number | null>(null);
   const [image, setImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   // const BackendUrl = 'http://localhost:8000'
-  const BackendUrl = 'https://mini-ecom-5r93.onrender.com'
+  const BackendUrl : string = 'https://mini-ecom-5r93.onrender.com'
 
-  const inputStyle =
+  const inputStyle : string =
     'border-b border-gray-300 focus:outline-none focus:border-purple-500 py-2';
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +49,7 @@ export default function AddProduct({setData}: {setData: Dispatch<React.SetStateA
             setPrice(null);
             setProductName('')
             if(data?.product){
-              setData((prev: any)=>[...prev, data.product])
+              setData((prev: Product[])=>[...prev, data.product as Product])
             }
         } catch (error) {
             console.log(error)

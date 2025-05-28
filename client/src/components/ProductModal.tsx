@@ -1,10 +1,11 @@
 // components/ProductModal.tsx
+import { Product } from "@/types/Products";
 import React from "react";
 
 type ProductModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  product: any;
+  product: Product;
 };
 
 const ProductModal: React.FC<ProductModalProps> = ({ isOpen, onClose, product }) => {

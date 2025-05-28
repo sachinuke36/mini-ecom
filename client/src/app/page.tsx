@@ -6,24 +6,27 @@ import MyProducts from "@/components/MyProducts";
 import { FaSearch } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import ProductModal from "@/components/ProductModal";
+import { Product } from "@/types/Products";
+import { User } from "@/types/User";
 
 export type activeProps = "my-products" | "add-product";
 
 const HomePage = () => {
   const [active, setActive] = useState<activeProps>("my-products");
-  const [data, setData] = useState<any>([]);
-  const [user, setUser] = useState<any>();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedProduct, setSelectedProduct] = useState("");
-  const [modalOpen, setModalOpen] = useState(false);
+  const [data, setData] = useState<Product[]>([]);
+  const [user, setUser] = useState<User | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [selectedProduct, setSelectedProduct] = useState<string>("");
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
   const router = useRouter();
 
-  const backendUrl = "http://localhost:8000";
+// const BackendUrl = 'http://localhost:8000'
+  const BackendUrl = 'https://mini-ecom-5r93.onrender.com'
 
   const getData = useCallback(async () => {
     const userId = localStorage.getItem("userId") as string;
     try {
-      const response = await fetch(backendUrl + "/api/products/" + userId);
+      const response = await fetch(BackendUrl + "/api/products/" + userId);
       const data = await response.json();
       setData(data);
       console.log(data);
@@ -35,7 +38,7 @@ const HomePage = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/auth/me", {
+        const res = await fetch(BackendUrl + "/api/auth/me", {
           method: "GET",
           credentials: "include",
         });
@@ -46,24 +49,25 @@ const HomePage = () => {
         setUser(data.user);
         console.log("User:", data.user);
       } catch (err) {
+        console.log(err)
         router.push("/login");
       }
     };
 
     checkAuth();
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     getData();
-  }, [getData]);
+  }, [getData, router]);
 
   const filteredData = data.filter(
-    (product: any) =>
+    (product: Product) =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  console.log(selectedProduct);
+  // console.log(selectedProduct);
 
   return (
     <div className="h-screen bg-gradient-to-br from-purple-600 to-indigo-700 flex items-center justify-center  md:p-4">
@@ -107,14 +111,19 @@ const HomePage = () => {
             </div>
           </>
         ) : (
-          <ProductModal
-            isOpen={modalOpen}
-            onClose={() => {
-              setModalOpen(false);
-              setSelectedProduct("");
-            }}
-            product={data?.find((item: any) => item.id === selectedProduct)}
-          />
+          (() => {
+            const product = data?.find((item: Product) => item.id === selectedProduct);
+            return product ? (
+              <ProductModal
+                isOpen={modalOpen}
+                onClose={() => {
+                  setModalOpen(false);
+                  setSelectedProduct("");
+                }}
+                product={product}
+              />
+            ) : null;
+          })()
         )}
       </div>
     </div>

@@ -1,8 +1,9 @@
+import { Product } from '@/types/Products';
 import Image from 'next/image'
 import React, { Dispatch } from 'react'
 
 
-export default function Card({card, setSelectedProduct, setModalOpen}:{card:any, 
+export default function Card({card, setSelectedProduct, setModalOpen}:{card:Product, 
   setSelectedProduct: Dispatch<React.SetStateAction<string>>,
   setModalOpen: Dispatch<React.SetStateAction<boolean>>
 }) {
